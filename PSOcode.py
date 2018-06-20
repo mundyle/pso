@@ -33,49 +33,56 @@ class Particle:
 			#The particle/obkect will also have a pBest propery shown as an array/vector. 
 			self.pBest.append(self.position[i])
 
-			print self.pBest
-			print self.position
+			# print self.pBest
+			# print self.position
 			print self.velocity
-			print
-	
+			# print
+
+		return
+
+
+
 	#This is the method to update the position for each particle. 
 	#Takes in the particle, so there is no other arguments needed. 
 	def updatePosition(self):
 
-		#Loops through the dimension of each particle 
-		for i in range(1,dimension):
+	#Loops through the dimension of each particle 
+		for i in range(dimension):
 
-			#Start off with URF/Alpha as 1
-			URF = 1
+			#Loops through the dimension of each particle 
+			for i in range(num_particles):
 
-			if (self.position[i-1] + (self.velocity[i]*URF) <= 0 ):
+				#This loop, loops through all the particles, calculating the URF and then updating the position of each particle
+				#Starts off at j=1 because the previous iteration of Xi_m needs to be used. 
+				for j in range(1,dimension):
 
-				URF = (10**(-5) - self.position[i-1])/self.velocity[i]
+					#Start off with URF/Alpha as 1
+					URF = 1
 
-				#This updates the position of the particle 
-				self.position[i] = self.position[i] + (self.velocity[i] * URF)
+					if (self.position[j-1] + self.velocity[j]*URF <= 0 ):
 
-				
+						URF = (10**(-5) - self.position[j-1])/self.velocity[j]
 
-				#if that value is not less than or equal to 1 
-			else:
+						#This updates the position of the particle 
+						self.position[i] = self.position[i] + (self.velocity[i] * URF)
 
-				#Temporary variable to store the value of the summaton of the position values 
-				summation = 0 
+						#if that value is not less than or equal to 1 
+					else:
 
-				#The summation of the positions are calculated 
-				for l in range(len(self.position)):
+						#Temporary variable to store the value of the summaton of the position values 
+						summation = 0 
 
-					#This will get the value from each position of the list position and then add it onto the variable summation
-					summation = self.position[l] + summation 
+						#The summation of the positions are calculated 
+						for k in range(self.position):
 
-					#Once calculated, URF is equal to 1/summation 
-					URF = 1/summation 
+							#This will get the value from each position of the list position and then add it onto the variable summation
+							summation = self.position[k] + summation 
 
-					#This updates the position of the particle 
-					self.position[l] = self.position[l] + (self.velocity[l] * URF)
+							#Once calculated, URF is equal to 1/summation 
+							URF = 1/summation 
 
-		# print self.position
+							#This updates the position of the particle 
+							self.position[i] = self.position[i] + (self.velocity[i] * URF)
 
 		return
 
@@ -83,7 +90,6 @@ class Particle:
 	#This is the method used to update the velocity of each particle. 
 	#Takes in the object, and the global best of the swarm 
 	def updateVelocity(self, gBest):
-
 
 		for i in range(dimension):
 
@@ -96,9 +102,6 @@ class Particle:
 			#Takes the best position of the whole SWARM, then subtracting the position of the particle 
 			social = phi_s * rs * (gBest[i] - self.position[i])
 
-			# print 'gbest'
-			# print gBest[i]
-			# print gBest
 
 			#Cognitive part is for the particle itself. 
 			#It takes the constants phi_p, rs and its personal best, and it's current position 
@@ -106,8 +109,6 @@ class Particle:
 
 			#The equation for calculating the current velocity of the particle 
 			self.velocity[i] = (psi * self.velocity[i]) + social + cognitive
-
-		
 
 		return 
 
@@ -132,13 +133,9 @@ class ParticleSwarmOptimizer:
 
 			#creates an object called particle, and it has the properties of the class Particle. 
 			particle = Particle()
-			
-			# print 'PB'
 			# print particle.pBest
-			# print 'P'
-			# print particle.position
-			# print 'V'
 			# print particle.velocity
+			# print particle.position
 			# print
 
 			#This appends that object called particle into the array called swarm, under the passed in particle object. 
@@ -151,26 +148,13 @@ class ParticleSwarmOptimizer:
 	#This method takes in the particle object, with no other arguments/parameters
 	def optimizeCase1(self):
 
+
 		for i in range(iterations):
-			
 			print "iteration", i 
 			print
 
 			#Let the first particle arbitrarily be the global best. 
 			gBest = self.swarm[0]
-
-			print 'swarm.p'
-			print self.swarm[0].position
-			print self.swarm[0].velocity
-			print self.swarm[0].pBest
-
-
-			print
-			print 'gBest'
-			print gBest
-			print gBest.position
-			print gBest.velocity
-			print gBest.pBest
 
 			#Looping through the particles in the swarm
 			for j in range(num_particles):
@@ -182,12 +166,9 @@ class ParticleSwarmOptimizer:
 				if self.calculatePiCase1(pBest) >= self.calculatePiCase1(gBest.pBest):
 					gBest = pBest
 
-
 			#Once the gbest is found, then set the list Solution the same as gBest. 
 			#gBest is a array/vector, same size as the dimension. 
 			solution = gBest
-
-			
 
 
 #Once that loop is finished, it moves onto this loop, where it updates the position of each particle, before the end of the iteration
@@ -198,15 +179,13 @@ class ParticleSwarmOptimizer:
 
 				#takes in the object, and in every particle in the swarm and uses the method updateVelocity, using the global best
 				#Does this for updating the position as well, along with the constraints
-				# print self.swarm[k].velocity
-				# print 'velocity'
-				# print self.swarm[k].velocity
+				print self.swarm[k].velocity
+
 				self.swarm[k].updateVelocity(gBest)
-				# print self.swarm[k].velocity
 
 				self.swarm[k].updatePosition()
 
-				# print self.swarm[k].velocity
+				print self.swarm[k].velocity
 
 			#Update the personal best positions of the swarm 
 			for l in range(num_particles):
@@ -297,7 +276,7 @@ class ParticleSwarmOptimizer:
 		#to calculate g_ref
 		for i in range(len(array)):
 
-			g_ref = array[i]*300 + molefraction[i]*0
+			g_ref = array[i]*0 + molefraction[i]*300 
 
 
 
@@ -306,7 +285,7 @@ class ParticleSwarmOptimizer:
 
 		for i in range(len(array)):
 
-			summation_for_gid = array[i] * math.log(array[i]) + molefraction[i] * math.log(molefraction[i])
+			summation_for_gid = array[i] * math.log(molefraction[i])
 
 			#once the summation is calculated, g_id = R*T the summation_for_gid
 
@@ -319,7 +298,7 @@ class ParticleSwarmOptimizer:
 		summation_of_g_ex = 0 
 		for i in range(len(array)):
 
-			g_ex = array[i]*molefraction[i]*21000 + (array[i])*(molefraction[i]**2)*7000
+			g_ex = array[i]*molefraction[i]*21000 + (array[i]**2)*molefraction[i]*7000
 
 			summation_of_g_ex = g_ex + summation_of_g_ex
 
@@ -333,14 +312,15 @@ class ParticleSwarmOptimizer:
 		#to calculate Pi 
 		#Where do you get m and b? 
 
-		Pi = G - ((-251.7) * array[i] + (-259.3))
+		Pi = 0
+		for i in range(len(array)):
 
-		# print 'Pi'
-		# print Pi
+			Pivalue = G - ((-251.7) * array[i] + (-259.3))
+
+			Pi = Pivalue + Pi
 
 
 		return 
-
 
 # def calculatePiCase2(self, array):
 
@@ -416,7 +396,7 @@ phi_s = 2
 phi_p= 2 
 
 dimension = 1 
-iterations = 2
+iterations = 4
 num_particles = dimension 
 
 
@@ -447,6 +427,9 @@ obj.optimizeCase1()
 
 
 #Case 2- Approach C 
+
+
+
 
 
 
